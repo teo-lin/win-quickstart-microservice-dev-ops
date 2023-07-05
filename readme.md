@@ -1,3 +1,7 @@
+Sometimes the first step is the hardest. This aims to simplify getting started with coding. It is a very simple app that batch installs the development tools you need then adds them to the Windows PATH if needed and does some extra quality of life settings.
+
+The initial commit is geared towards web development with node/python etc. I plan to add different paths later. Feel free to contribute
+
 # SETUP via CLI (Command Line Interface)
 Run 02-setup-dev-tools-cli.cmd as administrator, select desired tools with y/n
 
