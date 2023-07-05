@@ -1,0 +1,155 @@
+{
+    "pr_winget": {
+        "name": "Winget",
+        "text": "Winget (Windows Package Manager)",
+        "install": "winget install -e Microsoft.VisualStudio.16.PackageDependency",
+        "windows_path": "$($env:ProgramFiles)\\WindowsApps\\Microsoft.DesktopAppInstaller_1.*\\AppInstaller\\winget.exe"
+    },
+    "pr_update": {
+        "name": "Update existing Apps",
+        "text": "Update existing Apps (...via Winget)",
+        "install": "winget upgrade -all"
+    },
+    "pr_gitcli": {
+        "name": "Git",
+        "text": "Git (Version control system)",
+        "install": "winget install -e Git.Git",
+        "windows_path": "$($env:ProgramFiles)\\Git\\bin"
+    },
+    "pr_docker": {
+        "name": "Docker",
+        "text": "Docker (Containerization platform)",
+        "install": "winget install -e Docker.DockerDesktop",
+        "windows_path": "$($env:ProgramFiles)\\Docker\\Docker\\resources\\bin\\docker.exe"
+    },
+    "pr_vscode": {
+        "name": "VSCode",
+        "text": "VSCode (Lightweight and powerful code editor)",
+        "install": "winget install -e Microsoft.VisualStudioCode",
+        "windows_path": "$($env:ProgramFiles)\\Microsoft VS Code\\Code.exe"
+    },
+    "pr_vscext": {
+        "name": "Basic VSCode Extensions",
+        "text": "Basic VSCode Extensions (ESLint, Prettier, Docker, Postgres, PowerShell)",
+        "install": "code --install-extension dbaeumer.vscode-eslint --install-extension esbenp.prettier-vscode --install-extension ms-azuretools.vscode-docker --install-extension ms-ossdata.vscode-postgresql --install-extension ms-vscode.PowerShell"
+    },
+    "pr_intelj": {
+        "name": "IntelliJ IDEA",
+        "text": "IntelliJ IDEA (Integrated development environment for Java)",
+        "install": "winget install -e JetBrains.IntelliJIDEA.Community",
+        "windows_path": "$($env:ProgramFiles)\\JetBrains\\IntelliJ IDEA Community Edition 2021.1.2\\bin\\idea64.exe"
+    },
+    "pr_notepd": {
+        "name": "Notepad++",
+        "text": "Notepad++ (Free source code editor)",
+        "install": "winget install -e Notepad++.Notepad++",
+        "windows_path": "$($env:ProgramFiles)\\Notepad++\\notepad++.exe"
+    },
+    "pr_nodejs": {
+        "name": "Node.js",
+        "text": "Node.js (JavaScript runtime built on Chrome's V8 JavaScript engine)",
+        "install": "winget install -e OpenJS.NodeJS",
+        "windows_path": "$($env:ProgramFiles)\\nodejs\\node.exe"
+    },
+    "pr_npxcli": {
+        "name": "npx",
+        "text": "npx (npm package runner)",
+        "install": "npm install -g npx",
+        "windows_path": "$($env:AppData)\\npm\\npx.cmd"
+    },
+    "pr_python": {
+        "name": "Python",
+        "text": "Python (Popular programming language)",
+        "install": "winget install -e Python.Python",
+        "windows_path": "$($env:ProgramFiles)\\Python38\\python.exe"
+    },
+    "pr_pgrsql": {
+        "name": "PostgreSQL",
+        "text": "PostgreSQL (Open source relational database system)",
+        "install": "winget install -e PostgreSQL.PostgreSQL",
+        "windows_path": "$($env:ProgramFiles)\\PostgreSQL\\13\\bin\\psql.exe"
+    },
+    "pr_sqlite": {
+        "name": "SQLite",
+        "text": "SQLite (Self-contained, high-reliability, embedded, full-featured, public-domain SQL database engine)",
+        "install": "winget install -e SQLite.SQLite",
+        "windows_path": "$($env:ProgramFiles)\\SQLite\\sqlite3.exe"
+    },
+    "pr_my_sql": {
+        "name": "MySQL",
+        "text": "MySQL (Open source relational database management system)",
+        "install": "winget install -e Oracle.MySQL",
+        "windows_path": "$($env:ProgramFiles)\\MySQL\\MySQL Server 8.0\\bin"
+    },
+    "pr_redisc": {
+        "name": "Redis",
+        "text": "Redis (In-memory data structure store)",
+        "install": "winget install Redis --accept-package-agreements",
+        "windows_path": "$($env:ProgramFiles)\\Redis"
+    },
+    "pr_dbeavr": {
+        "name": "DBeaver",
+        "text": "DBeaver (Free universal database tool)",
+        "install": "winget install -e dbeaver.dbeaver",
+        "windows_path": "$($env:ProgramFiles)\\DBeaver\\dbeaver.exe"
+    },
+    "pr_pgadmn": {
+        "name": "pgAdmin",
+        "text": "pgAdmin (PostgreSQL management tool)",
+        "install": "winget install -e PostgreSQL.pgAdmin",
+        "windows_path": "$($env:ProgramFiles)\\pgAdmin 4\\bin"
+    },
+    "pr_gcpsdk": {
+        "name": "Google Cloud SDK",
+        "text": "Google Cloud SDK (Command-line interface for Google Cloud Platform)",
+        "install": "winget install -e Google.CloudSDK",
+        "windows_path": "$($env:ProgramFiles)\\Google\\Cloud SDK\\google-cloud-sdk\\bin"
+    },
+    "pr_awscli": {
+        "name": "AWS CLI",
+        "text": "AWS CLI (Unified tool for managing AWS services)",
+        "install": "winget install -e Amazon.AWSCLI",
+        "windows_path": "$($env:ProgramFiles)\\Amazon\\AWSCLI"
+    },
+    "pr_mazure": {
+        "name": "Azure CLI",
+        "text": "Azure CLI (Command-line interface for managing Azure resources)",
+        "install": "winget install -e Microsoft.AzureCLI",
+        "windows_path": "$($env:ProgramFiles(x86))\\Microsoft SDKs\\Azure\\CLI2\\wbin"
+    },
+    "pr_kubers": {
+        "name": "Kubernetes CLI",
+        "text": "Kubernetes CLI (Command-line interface for Kubernetes)",
+        "install": "winget install -e Kubernetes.kubectl",
+        "windows_path": "$($env:ProgramFiles)\\Kubernetes\\kubectl.exe"
+    },
+    "pr_postmn": {
+        "name": "Postman",
+        "text": "Postman (API development tool)",
+        "install": "winget install -e Postman.Postman",
+        "windows_path": "$($env:ProgramFiles)\\Postman\\Postman.exe"
+    },
+    "pr_rabbit":{
+        "name": "RabbitMQ",
+        "text": "RabbitMQ (Message broker software)",
+        "install": "winget install -e RabbitMQ.RabbitMQ-Server",
+        "windows_path": "$($env:ProgramFiles)\\RabbitMQ Server\\rabbitmq_server-3.9.5\\sbin"
+    },
+    "pr_reactj": {
+        "name": "React",
+        "text": "React (JavaScript library for building user interfaces)",
+        "install": "npm install -g create-react-app"
+    },
+    "pr_angulr": {
+        "name": "Angular",
+        "text": "Angular (TypeScript-based open-source web application framework)",
+        "install": "npm install -g @angular/cli",
+        "windows_path": "$($env:AppData)\\npm\\node_modules\\@angular\\cli\\bin"
+    },
+    "pr_nestjs":{
+        "name": "NestJS",
+        "text": "NestJS (Progressive Node.js framework)",
+        "install": "npm install -g @nestjs/cli",
+        "windows_path": "$($env:AppData)\\npm\\node_modules\\@nestjs\\cli\\bin"
+    }
+}
