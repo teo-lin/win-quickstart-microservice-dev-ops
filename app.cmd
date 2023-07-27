@@ -1,21 +1,35 @@
 @echo off
-setlocal EnableDelayedExpansion
-
-rem Check if the script is running as an administrator
+:: Check if the script is running as an administrator
 net session >nul 2>&1
 if %errorLevel% == 1 (
-    echo This script requires administrator privileges. Please run it as an administrator and try again.
+    echo FAILED: This script requires administrator privileges. Please run it as an administrator and try again.
     pause
     exit /b 1
+) else ( 
+    echo PASSED: Running with administrator privileges 
 )
 
-rem Check if the computer is connected to the internet
+:: Check if the computer is connected to the internet
 ping 8.8.8.8 -n 1 -w 1000 >nul
 if %errorLevel% == 1 (
-    echo This script requires an active internet connection. Please check your internet connection and try again.
+    echo FAILED: This script requires an active internet connection. Please check your internet connection and try again.
     pause
     exit /b 1
+) else ( 
+    echo PASSED: Internet connection OK 
 )
+
+:: Check if winget is already installed
+winget -v >nul 2>&1
+if %errorlevel% == 1 (
+    echo FAILED: Winget is not installed, please make sure you install it, else nothing else will work.
+    set "wg=false"
+) else (
+    echo PASSED: winget is already installed
+    set "wg=true"
+)
+
+setlocal EnableDelayedExpansion
 
 rem Select desired packages
 echo This script will install selected dev tools and add them to the PATH variables where needed.
@@ -115,46 +129,138 @@ set /p do_reactj=%pr_reactj%
 set /p do_angulr=%pr_angulr%
 set /p do_nestjs=%pr_nestjs%
 
-rem install winget
-@echo off
 
-rem Check if winget is already installed
-where winget.exe >nul 2>&1
-if %errorlevel% equ 0 (
-    echo "winget is already installed."
+rem check if winget is already installed, update if yes, else install, exit if not install and not selected
+if /i "%do_winget%"=="y" (
+    echo BEGIN: Installing Winget
+    if %wg% == true (
+        echo Winget is already installed. Checking for updates...
+        winget update
+    ) else (
+        echo Winget is not installed. Installing...
+        curl.exe -o winget.msixbundle -L https://github.com/microsoft/winget-cli/releases/latest/download/winget.msixbundle
+        start /wait AppInstaller.exe /install winget.msixbundle
+        del winget.msixbundle
+    )
+    echo ENDED: Installing Winget
 ) else (
-    curl.exe -o winget.msixbundle -L https://github.com/microsoft/winget-cli/releases/latest/download/winget.msixbundle
-    start /wait AppInstaller.exe /install winget.msixbundle
-    del winget.msixbundle
+    rem Stop if winget is not installed
+    if %wg% == false (
+        echo ENDED: Winget is not installed. Please install Winget first.
+        exit /b 1
+    )
 )
 
 rem install selected apps
-if /i "%do_winget%"=="n" exit /b
-if /i "%do_update%"=="y" (winget upgrade --all)
-if /i "%do_gitcli%"=="y" (winget install Git.Git && setx /M PATH "%PATH%;C:\Program Files\Git\bin")
-if /i "%do_github%"=="y" (set /p "NAME=Enter your name: " && set /p "EMAIL=Enter your email: " && git config --global user.name "%NAME%" && git config --global user.email "%EMAIL%" && git config --global core.editor "code --wait" && git config --global --list)
-if /i "%do_docker%"=="y" (winget install Docker.DockerDesktop && setx /M PATH "%PATH%;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin")
-if /i "%do_vscode%"=="y" (winget install Microsoft.VisualStudioCode && setx /M PATH "%PATH%;%LOCALAPPDATA%\Programs\Microsoft VS Code\bin" && reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\Open with VSCode\command" /ve /d "\"%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe\" \"%V%\"" /f && code --install-extension dbaeumer.vscode-eslint ms-azuretools.vscode-docker ms-ossdata.vscode-postgresql esbenp.prettier-vscode ms-vscode.PowerShell)
-if /i "%do_intelj%"=="y" (winget install JetBrains.IntelliJIDEA.Community.EAP)
-if /i "%do_notepd%"=="y" (winget install Notepad++.Notepad++)
-if /i "%do_pgrsql%"=="y" (winget install PostgreSQL.PostgreSQL && setx /M PATH "%PATH%;C:\Program Files\PostgreSQL\14\bin")
-if /i "%do_sqlite%"=="y" (winget install Oracle.MySQL)
-if /i "%do_my_sql%"=="y" (winget install SQLite.SQLite)
-if /i "%do_redisc%"=="y" (winget install Redis --accept-package-agreements)
-if /i "%do_dbeavr%"=="y" (winget install dbeaver.dbeaver)
-if /i "%do_pgadmn%"=="y" (winget install PostgreSQL.pgAdmin)
-if /i "%do_nodejs%"=="y" (winget install OpenJS.NodeJS && setx /M PATH "%PATH%;C:\Program Files\nodejs")
-if /i "%do_npxcli%"=="y" (npm install -g npx)
-if /i "%do_python%"=="y" (winget install Python.Python && setx /M PATH "%PATH%;C:\Python39")
-if /i "%do_gcpsdk%"=="y" (winget install Google.CloudSDK && setx /M PATH "%PATH%;C:\Program Files\Google\Cloud SDK\google-cloud-sdk\bin")
-if /i "%do_awscli%"=="y" (winget install Amazon.AWSCLI && setx /M PATH "%PATH%;C:\Program Files\Amazon\AWSCLI")
-if /i "%do_mazure%"=="y" (winget install Microsoft.AzureCLI && setx /M PATH "%PATH%;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin")
-if /i "%do_kubers%"=="y" (winget install Kubernetes.kubectl && setx /M PATH "%PATH%;C:\Program Files (x86)\Kubernetes\bin")
-if /i "%do_postmn%"=="y" (winget install Postman.Postman && setx /M PATH "%PATH%;C:\Users%USERNAME%\AppData\Local\Postman")
-if /i "%do_rabbit%"=="y" (winget install RabbitMQ.RabbitMQ-Server)
-if /i "%do_reactj%"=="y" (npm install -g create-react-app && setx /M PATH "%PATH%;C:\Users%USERNAME%\AppData\Roaming\npm")
-if /i "%do_angulr%"=="y" (npm install -g @angular/cli)
-if /i "%do_nestjs%"=="y" (npm install -g @nestjs/cli)
+if /i "%do_update%"=="y" (
+    winget upgrade --all
+    )
+if /i "%do_gitcli%"=="y" (
+    winget install Git.Git 
+    setx /M PATH "%PATH%;C:\Program Files\Git\bin"
+    )
+if /i "%do_github%"=="y" (
+    echo BEGIN: GitHub login
+
+    :: Prompt the user for name and save the input to NAME variable
+    set /p "NAME=Enter your name: "
+    set /p "EMAIL=Enter your email: "
+    :: Remove leading and trailing spaces from EMAIL
+    for /f "tokens=* delims= " %%a in ("!EMAIL!") do set "EMAIL=%%a"
+    for /f "tokens=* delims= " %%a in ("!NAME!") do set "NAME=%%a"
+
+    :: Set Git configuration if confirmed
+    git config --global user.name "!NAME!" 
+    git config --global user.email "!EMAIL!" 
+    git config --global core.editor "code --wait" 
+    git config --global --list
+
+    echo ENDED: GitHub login
+
+    )
+if /i "%do_docker%"=="y" (
+    winget install Docker.DockerDesktop 
+    setx /M PATH "%PATH%;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin"
+    )
+if /i "%do_vscode%"=="y" (
+    winget install Microsoft.VisualStudioCode 
+    setx /M PATH "%PATH%;%LOCALAPPDATA%\Programs\Microsoft VS Code\bin" 
+    reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\Open with VSCode\command" /ve /d "\"%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe\" \"%V%\"" /f 
+    code --install-extension dbaeumer.vscode-eslint 
+    code --install-extension ms-azuretools.vscode-docker 
+    code --install-extension ms-ossdata.vscode-postgresql 
+    code --install-extension esbenp.prettier-vscode 
+    code --install-extension ms-vscode.PowerShell
+    )
+if /i "%do_intelj%"=="y" (
+    winget install JetBrains.IntelliJIDEA.Community.EAP
+    )
+if /i "%do_notepd%"=="y" (
+    winget install Notepad++.Notepad++
+    )
+if /i "%do_pgrsql%"=="y" (
+    winget install PostgreSQL.PostgreSQL 
+    setx /M PATH "%PATH%;C:\Program Files\PostgreSQL\14\bin"
+    )
+if /i "%do_sqlite%"=="y" (
+    winget install Oracle.MySQL
+    )
+if /i "%do_my_sql%"=="y" (
+    winget install SQLite.SQLite
+    )
+if /i "%do_redisc%"=="y" (
+    winget install Redis --accept-package-agreements
+    )
+if /i "%do_dbeavr%"=="y" (
+    winget install dbeaver.dbeaver
+    )
+if /i "%do_pgadmn%"=="y" (
+    winget install PostgreSQL.pgAdmin
+    )
+if /i "%do_nodejs%"=="y" (
+    winget install OpenJS.NodeJS 
+    setx /M PATH "%PATH%;C:\Program Files\nodejs"
+    )
+if /i "%do_npxcli%"=="y" (
+    npm install -g npx
+    )
+if /i "%do_python%"=="y" (
+    winget install Python.Python 
+    setx /M PATH "%PATH%;C:\Python39"
+    )
+if /i "%do_gcpsdk%"=="y" (
+    winget install Google.CloudSDK 
+    setx /M PATH "%PATH%;C:\Program Files\Google\Cloud SDK\google-cloud-sdk\bin"
+    )
+if /i "%do_awscli%"=="y" (
+    winget install Amazon.AWSCLI 
+    setx /M PATH "%PATH%;C:\Program Files\Amazon\AWSCLI"
+    )
+if /i "%do_mazure%"=="y" (
+    winget install Microsoft.AzureCLI 
+    setx /M PATH "%PATH%;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin"
+    )
+if /i "%do_kubers%"=="y" (
+    winget install Kubernetes.kubectl 
+    setx /M PATH "%PATH%;C:\Program Files (x86)\Kubernetes\bin"
+    )
+if /i "%do_postmn%"=="y" (
+    winget install Postman.Postman 
+    setx /M PATH "%PATH%;C:\Users%USERNAME%\AppData\Local\Postman"
+    )
+if /i "%do_rabbit%"=="y" (
+    winget install RabbitMQ.RabbitMQ-Server
+    )
+if /i "%do_reactj%"=="y" (
+    npm install -g create-react-app 
+    setx /M PATH "%PATH%;C:\Users%USERNAME%\AppData\Roaming\npm"
+    )
+if /i "%do_angulr%"=="y" (
+    npm install -g @angular/cli
+    )
+if /i "%do_nestjs%"=="y" (
+    npm install -g @nestjs/cli
+    )
 
 endlocal
 pause
