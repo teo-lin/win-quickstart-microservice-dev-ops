@@ -1,4 +1,5 @@
 @echo off
+setlocal EnableDelayedExpansion
 
 rem Check if the script is running as an administrator
 net session >nul 2>&1
@@ -23,10 +24,11 @@ echo Select the tools/apps you'd like to install/update by pressing y for each a
 set /p do_descrp=Would you like to see a brief description of each app/tool?  
 
 if /i "%do_descrp%"=="y" (
-    set "pr_winget= Winget? (Windows Package Manager) "
+    set "pr_winget=Winget? (Windows Package Manager) "
     set "pr_update=Update existing Apps? (...via Winget) "
-    set "pr_gitcli= Git? (Version control system) "
-    set "pr_docker= Docker? (Containerization platform) "
+    set "pr_gitcli=Git? (Version control system) "
+    set "pr_github=GitHub? (GitHub login) "
+    set "pr_docker=Docker? (Containerization platform) "
     set "pr_vscode=VSCode? (Lightweight and powerful code editor) "
     set "pr_vscext=Basic VSCode Extensions (ESLint, Prettier, Docker, Postgres, PowerShell)? (Useful extensions for VSCode) "
     set "pr_intelj=IntelliJ IDEA? (Integrated development environment for Java) "
@@ -53,6 +55,7 @@ if /i "%do_descrp%"=="y" (
     set "pr_winget=Winget? "
     set "pr_update=Existing Apps? "
     set "pr_gitcli=Git? "
+    set "pr_github=GitHub? "
     set "pr_docker=Docker? "
     set "pr_vscode=VSCode? "
     set "pr_vscext=Basic VSCode Extensions (ESLint, Prettier, Docker, Postgres, PowerShell)? "
@@ -81,6 +84,7 @@ echo ====== Must haves:
 set /p do_winget=%pr_winget%
 set /p do_update=%pr_update%
 set /p do_gitcli=%pr_gitcli%
+set /p do_github=%pr_github%
 set /p do_docker=%pr_docker%
 echo ====== Choose IDE:
 set /p do_vscode=%pr_vscode%
@@ -114,7 +118,7 @@ set /p do_nestjs=%pr_nestjs%
 rem install winget
 @echo off
 
-:: Check if winget is already installed
+rem Check if winget is already installed
 where winget.exe >nul 2>&1
 if %errorlevel% equ 0 (
     echo "winget is already installed."
@@ -128,6 +132,7 @@ rem install selected apps
 if /i "%do_winget%"=="n" exit /b
 if /i "%do_update%"=="y" (winget upgrade --all)
 if /i "%do_gitcli%"=="y" (winget install Git.Git && setx /M PATH "%PATH%;C:\Program Files\Git\bin")
+if /i "%do_github%"=="y" (set /p "NAME=Enter your name: " && set /p "EMAIL=Enter your email: " && git config --global user.name "%NAME%" && git config --global user.email "%EMAIL%" && git config --global core.editor "code --wait" && git config --global --list)
 if /i "%do_docker%"=="y" (winget install Docker.DockerDesktop && setx /M PATH "%PATH%;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin")
 if /i "%do_vscode%"=="y" (winget install Microsoft.VisualStudioCode && setx /M PATH "%PATH%;%LOCALAPPDATA%\Programs\Microsoft VS Code\bin" && reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\Open with VSCode\command" /ve /d "\"%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe\" \"%V%\"" /f && code --install-extension dbaeumer.vscode-eslint ms-azuretools.vscode-docker ms-ossdata.vscode-postgresql esbenp.prettier-vscode ms-vscode.PowerShell)
 if /i "%do_intelj%"=="y" (winget install JetBrains.IntelliJIDEA.Community.EAP)
@@ -151,4 +156,5 @@ if /i "%do_reactj%"=="y" (npm install -g create-react-app && setx /M PATH "%PATH
 if /i "%do_angulr%"=="y" (npm install -g @angular/cli)
 if /i "%do_nestjs%"=="y" (npm install -g @nestjs/cli)
 
+endlocal
 pause
